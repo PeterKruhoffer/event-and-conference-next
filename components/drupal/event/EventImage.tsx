@@ -24,10 +24,11 @@ export function EventImage({
     <figure className={className}>
       <Image
         src={absoluteUrl(imageUrl)}
-        width={768}
-        height={400}
+        width={1152}
+        height={600}
         alt={image.resourceIdObjMeta?.alt || ""}
         priority={priority}
+        sizes="(min-width: 1280px) 1152px, calc(100vw - 3rem)"
         className="h-auto w-full"
       />
       {image.resourceIdObjMeta?.title && (
