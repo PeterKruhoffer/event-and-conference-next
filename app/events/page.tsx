@@ -14,8 +14,9 @@ export default async function EventsPage() {
     {
       params: {
         "filter[status]": 1,
+        include: "field_event_image",
         "fields[node--event]":
-          "title,path,drupal_internal__nid,field_capacity,field_end_date,field_event_type,field_location,field_signup_deadline,field_start_date",
+          "title,path,drupal_internal__nid,field_capacity,field_end_date,field_event_image,field_event_type,field_location,field_signup_deadline,field_start_date",
         sort: "field_start_date",
       },
       next: {

@@ -5,6 +5,7 @@ import {
   getEventTypeClass,
   isMultiDayEvent,
 } from "./EventTeaser.helpers"
+import { getEventImagePrefetchProps } from "./EventImage"
 import { Teaser } from "./Teaser"
 import { formatDateTimeRange } from "@/lib/utils"
 import type { DrupalNode } from "next-drupal"
@@ -66,6 +67,7 @@ export function EventTeaser({ node, ...props }: EventTeaserProps) {
     capacity: node.field_capacity,
     signupDeadline: node.field_signup_deadline,
   })
+  const eventImagePrefetchProps = getEventImagePrefetchProps(node)
   const isMultiDay = isMultiDayEvent(node.field_start_date, node.field_end_date)
 
   const teaserProps = {
@@ -83,6 +85,16 @@ export function EventTeaser({ node, ...props }: EventTeaserProps) {
         href={eventPath}
         aria-label={`View details for ${node.title}`}
         className="block no-underline"
+        prefetchImages={
+          eventImagePrefetchProps
+            ? {
+                loading: eventImagePrefetchProps.loading,
+                sizes: eventImagePrefetchProps.sizes,
+                src: eventImagePrefetchProps.src,
+                srcSet: eventImagePrefetchProps.srcSet,
+              }
+            : undefined
+        }
       >
         <EventTeaserContent {...teaserProps} />
       </Link>
