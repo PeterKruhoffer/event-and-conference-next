@@ -89,5 +89,11 @@ export function formatTimeUntil(input: string): string {
 }
 
 export function absoluteUrl(input: string) {
-  return `${process.env.NEXT_PUBLIC_DRUPAL_BASE_URL}${input}`
+  const baseUrl = process.env.NEXT_PUBLIC_DRUPAL_BASE_URL
+
+  if (!baseUrl) {
+    return input
+  }
+
+  return new URL(input, baseUrl).toString()
 }
