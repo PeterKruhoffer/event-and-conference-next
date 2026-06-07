@@ -1,25 +1,15 @@
-import { EventImage } from "@/components/drupal/EventImage"
-import { Link } from "@/components/navigation/Link"
+import { EventImage } from "./EventImage"
 import { formatDateTime } from "@/lib/utils"
 import type { DrupalNode } from "next-drupal"
 
-interface EventTeaserProps {
+interface EventProps {
   node: DrupalNode
 }
 
-export function EventTeaser({ node, ...props }: EventTeaserProps) {
-  const eventPath = node.path?.alias
-
+export function Event({ node, ...props }: EventProps) {
   return (
     <article {...props}>
-      <EventImage node={node} className="mb-6" />
-      {eventPath ? (
-        <Link href={eventPath} className="no-underline hover:text-blue-600">
-          <h2 className="mb-4 text-4xl font-bold">{node.title}</h2>
-        </Link>
-      ) : (
-        <h2 className="mb-4 text-4xl font-bold">{node.title}</h2>
-      )}
+      <h1 className="mb-4 text-6xl font-black leading-tight">{node.title}</h1>
       <dl className="grid gap-3 mb-6 text-gray-700 sm:grid-cols-2">
         {node.field_start_date && (
           <div>
@@ -45,33 +35,27 @@ export function EventTeaser({ node, ...props }: EventTeaserProps) {
             <dd>{node.field_capacity}</dd>
           </div>
         )}
+        {node.field_signup_deadline && (
+          <div>
+            <dt className="font-semibold text-gray-950">Signup deadline</dt>
+            <dd>{formatDateTime(node.field_signup_deadline)}</dd>
+          </div>
+        )}
+        {node.field_event_type && (
+          <div>
+            <dt className="font-semibold text-gray-950">Type</dt>
+            <dd>{node.field_event_type}</dd>
+          </div>
+        )}
       </dl>
+      <EventImage node={node} priority />
       {node.field_description?.processed && (
         <div
           dangerouslySetInnerHTML={{
             __html: node.field_description.processed,
           }}
-          className="font-serif text-xl leading-loose prose"
+          className="mt-6 font-serif text-xl leading-loose prose"
         />
-      )}
-      {eventPath && (
-        <Link
-          href={eventPath}
-          className="inline-flex items-center px-6 py-2 mt-6 border border-gray-600 rounded-full hover:bg-gray-100"
-        >
-          View event
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-4 h-4 ml-2"
-          >
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
-        </Link>
       )}
     </article>
   )

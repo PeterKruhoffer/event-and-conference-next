@@ -1,4 +1,4 @@
-import { EventTeaser } from "@/components/drupal/EventTeaser"
+import { EventTeaser } from "@/components/drupal/event/EventTeaser"
 import { drupal } from "@/lib/drupal"
 import type { Metadata } from "next"
 import type { DrupalNode } from "next-drupal"
@@ -15,8 +15,7 @@ export default async function EventsPage() {
       params: {
         "filter[status]": 1,
         "fields[node--event]":
-          "title,path,field_capacity,field_description,field_end_date,field_event_image,field_event_type,field_location,field_signup_deadline,field_start_date",
-        include: "field_event_image",
+          "title,path,drupal_internal__nid,field_capacity,field_end_date,field_event_type,field_location,field_signup_deadline,field_start_date",
         sort: "field_start_date",
       },
       next: {
