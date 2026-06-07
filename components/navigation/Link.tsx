@@ -9,15 +9,7 @@ type LinkProps = NextLinkProps &
   }
 
 export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
-  function LinkWithRef(
-    {
-      // Turn next/link prefetching off by default.
-      // @see https://github.com/vercel/next.js/discussions/24009
-      prefetch = false,
-      ...rest
-    },
-    ref
-  ) {
-    return <NextLink prefetch={prefetch} {...rest} ref={ref} />
+  function LinkWithRef(props, ref) {
+    return <NextLink {...props} ref={ref} />
   }
 )
