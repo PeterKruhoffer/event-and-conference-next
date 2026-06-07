@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { getDraftData } from "next-drupal/draft"
 import { Article } from "@/components/drupal/Article"
 import { BasicPage } from "@/components/drupal/BasicPage"
+import { Event } from "@/components/drupal/Event"
 import { drupal } from "@/lib/drupal"
 import type { Metadata, ResolvingMetadata } from "next"
 import type { DrupalNode, JsonApiParams } from "next-drupal"
@@ -31,6 +32,10 @@ async function getNode(slug: string[]) {
 
   if (type === "node--article") {
     params.include = "field_image,uid"
+  }
+
+  if (type === "node--event") {
+    params.include = "field_event_image"
   }
 
   const resource = await drupal.getResource<DrupalNode>(type, uuid, {
@@ -84,7 +89,7 @@ export async function generateMetadata(
   }
 }
 
-const RESOURCE_TYPES = ["node--page", "node--article"]
+const RESOURCE_TYPES = ["node--page", "node--article", "node--event"]
 
 export async function generateStaticParams(): Promise<NodePageParams[]> {
   const resources = await drupal.getResourceCollectionPathSegments(
@@ -137,6 +142,7 @@ export default async function NodePage(props: NodePageProps) {
     <>
       {node.type === "node--page" && <BasicPage node={node} />}
       {node.type === "node--article" && <Article node={node} />}
+      {node.type === "node--event" && <Event node={node} />}
     </>
   )
 }

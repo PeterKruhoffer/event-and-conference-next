@@ -1,22 +1,27 @@
 /** @type {import('next').NextConfig} */
 const drupalBaseUrl = process.env.NEXT_PUBLIC_DRUPAL_BASE_URL
 const drupalBaseUrlWithoutTrailingSlash = drupalBaseUrl?.replace(/\/$/, "")
-const imageDomain = process.env.NEXT_IMAGE_DOMAIN
-  ? new URL(`https://${process.env.NEXT_IMAGE_DOMAIN.replace(/^https?:\/\//, "").replace(/\/$/, "")}`).hostname
-  : undefined
+
+function getHostname(value) {
+  if (!value) {
+    return undefined
+  }
+
+  return new URL(value.startsWith("http") ? value : `https://${value}`).hostname
+}
+
+const imageDomains = [
+  getHostname(process.env.NEXT_IMAGE_DOMAIN?.replace(/\/$/, "")),
+  getHostname(drupalBaseUrlWithoutTrailingSlash),
+].filter(Boolean)
 
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    remotePatterns: imageDomain
-      ? [
-          {
-            protocol: "https",
-            hostname: imageDomain,
-            pathname: "/sites/default/files/**",
-          },
-        ]
-      : [],
+    remotePatterns: Array.from(new Set(imageDomains)).map((hostname) => ({
+      protocol: "https",
+      hostname,
+    })),
   },
   async rewrites() {
     if (!drupalBaseUrlWithoutTrailingSlash) {
