@@ -1,5 +1,7 @@
 import { EventImage } from "./EventImage"
+import { EventRegistrationForm } from "./EventRegistrationForm"
 import { formatEventType, getEventTypeClass } from "./EventTeaser.helpers"
+import { getEventAvailability } from "@/lib/conference"
 import { formatDateTime, formatTimeUntil } from "@/lib/utils"
 import type { DrupalNode } from "next-drupal"
 
@@ -7,11 +9,12 @@ interface EventProps {
   node: DrupalNode
 }
 
-export function Event({ node, ...props }: EventProps) {
+export async function Event({ node, ...props }: EventProps) {
   const eventType = node.field_event_type ? String(node.field_event_type) : ""
   const timeUntilSignupDeadline = node.field_signup_deadline
     ? formatTimeUntil(node.field_signup_deadline)
     : null
+  const availability = await getEventAvailability(node.drupal_internal__nid)
 
   return (
     <article
@@ -74,6 +77,13 @@ export function Event({ node, ...props }: EventProps) {
           </div>
         )}
       </dl>
+      {node.drupal_internal__nid && (
+        <EventRegistrationForm
+          availability={availability}
+          eventId={node.drupal_internal__nid}
+          eventTitle={node.title}
+        />
+      )}
       <EventImage node={node} priority />
       {node.field_description?.processed && (
         <div
